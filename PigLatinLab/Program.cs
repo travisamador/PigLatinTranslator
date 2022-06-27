@@ -14,10 +14,16 @@ while (runProgram)
         continue;
     }
 
+    //split string into array and keep as is for comparison
     string[] line = input.Split(" ", StringSplitOptions.RemoveEmptyEntries);
+    //Copy array and remove punctuation for translating
     string[] translated = new string[line.Length];
     line.CopyTo(translated, 0);
     removePunc(ref translated);
+    //new comparison array for casing, in case of punctuation at beginning of a word
+    string[] casing = new string[line.Length];
+    line.CopyTo(casing, 0);
+    removePunc(ref casing);
     for (int i = 0; i < line.Length; i++)
     {
         if (hasSymbol(translated[i]) || hasDigit(translated[i]))
@@ -34,7 +40,7 @@ while (runProgram)
             if (vowels.Contains(firstLetter.ToLower()))
             {
                 word += "way";
-                keepCase(line[i], ref word);
+                keepCase(casing[i], ref word);
                 translated[i] = word;
             }
 
@@ -46,7 +52,7 @@ while (runProgram)
                     //substring using current loop number
                     //if it is a vowel save that number
                     string letter = word.Substring(j, 1);
-                    if (vowels.Contains(letter.ToLower()))
+                    if (vowels.Contains(letter.ToLower()) || (yIsVowel(word) && letter == "y"))
                     {
                         //substring from 0 to that number
                         string moveToEnd = word.Substring(0, j);
@@ -54,7 +60,7 @@ while (runProgram)
                         string moveToBeginning = word.Substring(j);
                         //take those 2, rearrange them with ay at the end
                         translated[i] = moveToBeginning + moveToEnd + "ay";
-                        keepCase(line[i], ref translated[i]);
+                        keepCase(casing[i], ref translated[i]);
                         break;
                     }
                 }
@@ -220,4 +226,26 @@ static void CopyPunc(string[] strArr1, ref string[] strArr2)
         ending = new string(endPunc);
         strArr2[i] = beginning + strArr2[i] + ending;
     }
+}
+
+//yIsVowel() method
+static bool yIsVowel(string word)
+{
+    char[] charVowels = new char[] { 'a', 'e', 'i', 'o', 'u' };
+    char[] charWord = word.ToCharArray();
+    bool isVowel = false;
+    int vowelCount = 0;
+    for (int i = 0; i < word.Length; i++)
+    {
+        if (charVowels.Contains(word[i]))
+        {
+            vowelCount++;
+            break;
+        }
+    }
+    if ((charWord.Contains('y') || charWord.Contains('Y')) && vowelCount == 0)
+    {
+        isVowel = true;
+    }
+    return isVowel;
 }
