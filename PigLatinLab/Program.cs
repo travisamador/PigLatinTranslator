@@ -38,7 +38,7 @@ while (runProgram)
                 translated[i] = word;
             }
 
-            //else loop through letters of wordI
+            //else loop through letters of word
             else
             {
                 for (int j = 0; j < word.Length; j++)
@@ -157,9 +157,27 @@ static void removePunc(ref string[] strArr)
     char[] notPunctuation = new char[] { '@', '&', '%', '#' };
     for (int i = 0; i < strArr.Length; i++)
     {
-        if (Char.IsPunctuation(strArr[i][strArr[i].Length - 1]) && !notPunctuation.Contains(strArr[i][strArr[i].Length - 1]))
+        while (true)
         {
-            strArr[i] = strArr[i].Substring(0, strArr[i].Length - 1);
+            if (Char.IsPunctuation(strArr[i][strArr[i].Length - 1]) && !notPunctuation.Contains(strArr[i][strArr[i].Length - 1]))
+            {
+                strArr[i] = strArr[i].Substring(0, strArr[i].Length - 1);
+            }
+            else
+            {
+                break;
+            }
+        }
+        while (true)
+        {
+            if (Char.IsPunctuation(strArr[i][0]) && !notPunctuation.Contains(strArr[i][0]))
+            {
+                strArr[i] = strArr[i].Substring(1, strArr[i].Length - 1);
+            }
+            else
+            {
+                break;
+            }
         }
     }
 }
@@ -168,11 +186,38 @@ static void removePunc(ref string[] strArr)
 static void CopyPunc(string[] strArr1, ref string[] strArr2)
 {
     char[] notPunctuation = new char[] { '@', '&', '%', '#' };
+   
     for (int i = 0; i < strArr1.Length; i++)
     {
-        if (Char.IsPunctuation(strArr1[i][strArr1[i].Length - 1]) && !notPunctuation.Contains(strArr1[i][strArr1[i].Length - 1]))
+        string beginning = "";
+        string ending = "";
+        while (true)
         {
-            strArr2[i] += strArr1[i][strArr1[i].Length - 1];
+            if (Char.IsPunctuation(strArr1[i][strArr1[i].Length - 1]) && !notPunctuation.Contains(strArr1[i][strArr1[i].Length - 1]))
+            {
+                ending += strArr1[i][strArr1[i].Length - 1];
+                strArr1[i] = strArr1[i].Substring(0, strArr1[i].Length - 1);
+            }
+            else
+            {
+                break;
+            }
         }
+        while (true)
+        {
+            if (Char.IsPunctuation(strArr1[i][0]) && !notPunctuation.Contains(strArr1[i][0]))
+            {
+                beginning += strArr1[i][0];
+                strArr1[i] = strArr1[i].Substring(1, strArr1[i].Length - 1);
+            }
+            else
+            {
+                break;
+            }
+        }
+        char[] endPunc = ending.ToCharArray();
+        Array.Reverse(endPunc);
+        ending = new string(endPunc);
+        strArr2[i] = beginning + strArr2[i] + ending;
     }
 }
